@@ -1,13 +1,13 @@
 #include "module_one.h"
 
-void	my_delay_ms(unsigned int ms)
+void	my_delay_ms(uint32_t ms)
 //creating my own delay
 {
-	volatile unsigned int x;
+	volatile uint32_t x;
 	//use of volatile is necessary because flag optimization will prune the x
 	while (ms)
 	{
-		x = 1100;
+		x = 800;
 		while (x)
 			x--;
 		ms--;
