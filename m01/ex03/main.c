@@ -27,23 +27,19 @@ int main(void)
 	SET_IN(D, 2);
 	SET_IN(D, 3);
 
+	uint16_t sw1_prev_state = 0;
+	uint16_t sw2_prev_state = 0;
+	
 	while (1) 
-	{	
-		if (~PIND & (1 << PD2))
-		{
-			_delay_ms(20); //avoid rebound
-			if (~PIND & (1 << PD2) && counter < 10) 
-				change_timer(++counter); //change cyclic ratio (here increment)
-			while (~PIND & (1 << PD2))
-				;
-		}
-		if (~PIND & (1 << PD4))
-		{
-			_delay_ms(20);
-			if (~PIND & (1 << PD4) && counter > 1)
-				change_timer(--counter);
-			while (~PIND & (1 << PD4))
-				;
-		}
+	{
+		uint16_t sw1_current_state = ~PIND & (1 << PD2);
+		uint16_t sw2_current_state = ~PIND & (1 << PD4);
+		if (!sw1_current_state && sw1_prev_state && counter < 10)
+			change_timer(++counter); //change cyclic ratio (here increment)
+		if (!sw2_current_state && sw2_prev_state && counter > 1)
+			change_timer(--counter);
+		sw1_prev_state = sw1_current_state;
+		sw2_prev_state = sw2_current_state;
+		_delay_ms(20); //avoid rebound
 	}
 }
