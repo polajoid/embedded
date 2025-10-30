@@ -40,7 +40,7 @@ clean:
 
 re: clean all
 
-show: all
-	screen $(CHIP_PORT) $(BAUD_RATE)
+# show: all
+# 	screen $(CHIP_PORT) $(BAUD_RATE)
 
 .PHONY: all hex flash clean re
