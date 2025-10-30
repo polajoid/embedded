@@ -5,6 +5,8 @@
 int main(void)
 {
 	SET_OUT(D, 5);
+	SET_OUT(D, 6);
+	SET_OUT(D, 3);
 	while (1)
 	{
 		PORTD = (1 << PD5);
