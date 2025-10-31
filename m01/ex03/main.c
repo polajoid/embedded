@@ -25,7 +25,7 @@ int main(void)
 	
 	//Setting up also both switch:
 	SET_IN(D, 2);
-	SET_IN(D, 3);
+	SET_IN(D, 4);
 
 	uint16_t sw1_prev_state = 0;
 	uint16_t sw2_prev_state = 0;
