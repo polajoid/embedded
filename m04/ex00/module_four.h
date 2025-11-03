@@ -5,6 +5,8 @@
 #  define F_CPU 16000000UL
 # endif
 
+# define BOUNCE_DURATION 20
+
 # define SET_OUT(x, a) DDR##x |= (1 << P##x##a)
 # define SET_IN(x, a) DDR##x &= ~(1 << P##x##a)
 
