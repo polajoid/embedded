@@ -24,12 +24,12 @@ HEADER_DIR = include
 
 
 SRCS = main.c \
-	   led.c \
-	   timer.c
+	   uart.c \
+	   i2c.c
 
 HEADER = main.h \
-		 led.h	\
-		 timer.h
+		 uart.h	\
+		 i2c.h
 
 OBJS = $(SRCS:%.c=${OBJ_DIR}/%.o)
 

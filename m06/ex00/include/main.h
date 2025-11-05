@@ -19,7 +19,6 @@
 # define TURN_OFF(x, a) PORT##x &= ~(1 << P##x##a)
 
 # include <avr/io.h>
-# include <util/delay.h>
-# include <avr/interrupt.h>
+# include <util/twi.h>
 
 #endif

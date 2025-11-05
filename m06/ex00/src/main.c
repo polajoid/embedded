@@ -1,6 +1,6 @@
 #include "main.h"
-#include "timer.h"
-#include "led.h"
+#include "i2c.h"
+#include "uart.h"
 
 void	init_ADC(void)
 {
