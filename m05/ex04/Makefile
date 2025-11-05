@@ -24,11 +24,11 @@ HEADER_DIR = include
 
 
 SRCS = main.c \
-	   uart.c \
+	   led.c \
 	   timer.c
 
 HEADER = main.h \
-		 uart.h	\
+		 led.h	\
 		 timer.h
 
 OBJS = $(SRCS:%.c=${OBJ_DIR}/%.o)
@@ -78,5 +78,7 @@ re: clean all
 
 show: all
 	screen $(CHIP_PORT) $(BAUD_RATE)
+#	sudo cu -l $(CHIP_PORT) -s $(BAUD_RATE)
+##press MAJ ` (~) and . and ENTER to quit cu
 
 .PHONY: all hex flash clean re

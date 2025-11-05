@@ -78,5 +78,7 @@ re: clean all
 
 show: all
 	screen $(CHIP_PORT) $(BAUD_RATE)
+#	sudo cu -l $(CHIP_PORT) -s $(BAUD_RATE)
+##press MAJ ` (~) and . and ENTER to quit cu
 
 .PHONY: all hex flash clean re
