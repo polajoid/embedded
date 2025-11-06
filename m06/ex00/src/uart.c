@@ -1,4 +1,5 @@
 #include "uart.h"
+#include "main.h"
 
 void	uart_tx(const char c)
 {
