@@ -14,5 +14,6 @@ int	main(void)
 		i2c_stop();
 		/* For testing that both connection works: */ 
 		/* _delay_ms(1000); */
+		/* But technically, this is illegal... */
 	}
 }

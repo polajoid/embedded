@@ -15,6 +15,9 @@ void	i2c_init(void);
 void	i2c_start(uint8_t address, uint8_t mode);
 void	i2c_stop(void);
 void	i2c_write(unsigned char data);
-void	i2c_read(void);
+uint8_t	i2c_read(void);
+
+void	i2c_address(uint8_t address, uint8_t mode);
+
 
 #endif

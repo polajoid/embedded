@@ -34,6 +34,7 @@ HEADER = main.h \
 		 i2c.h 	\
 		 i2c_debug.h
 			
+
 OBJS = $(SRCS:%.c=${OBJ_DIR}/%.o)
 
 DEPS = $(SRCS:%.c=$(DEP_DIR)/%.d)
@@ -48,7 +49,7 @@ BIN_FILE = $(BUILD_DIR)/main.bin
 HEX_FILE = $(BUILD_DIR)/main.hex
 
 
-all: hex flash
+all: hex flash show
 -include $(DEPS)
 
 hex: $(HEX_FILE)
@@ -81,6 +82,7 @@ re: clean all
 
 show: all
 	screen $(CHIP_PORT) $(BAUD_RATE)
+	# sudo cu -l $(CHIP_PORT) -s $(BAUD_RATE)
 ##press MAJ ` (~) and . and ENTER to quit cu
 
 .PHONY: all hex flash clean re

@@ -10,7 +10,7 @@ void	i2c_init(void)
 	/* SDA is on port PC4 and SCL is ont port PC5 */
 	SET_INPUT(C, 4);
 	SET_INPUT(C, 5);
-
+	SET(TWCR, TWEN);
 	SET(TWCR, TWEA);
 	uart_printstr("I2C has been initialized\n\r");
 }
@@ -19,7 +19,6 @@ void	i2c_start(void)
 {
 	/* MCU is the master, T Sensor is the slave. I need to send message asking for a start on the bus and with address of T Sensor */
 	/* Step one: write what I want to do */
-	SET(TWCR, TWEN);
 	SET(TWCR, TWSTA);
 
 	/* Step two: write the TWINT bit to start communication */
@@ -33,7 +32,6 @@ void	i2c_start(void)
 void	i2c_stop(void)
 {
 	/* Step one: write that I will send a stop condition: */
-	SET(TWCR, TWEN);
 	SET(TWCR, TWSTO);
 
 	/* Step two: clear the TWINT to send the stop condition */
