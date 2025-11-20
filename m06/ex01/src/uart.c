@@ -1,26 +1,18 @@
 #include "uart.h"
 #include "main.h"
 
-void	print_hexa(uint8_t c)
-{
-	if (c >= 16)
-	{
-		print_hexa(c / 16);
-		print_hexa(c % 16);
-	}
-	else
-	{
-		if (c >= 10)
-			uart_tx(c - 10 + 'a');
-		else
-			uart_tx(c + '0');
-	}
-	return ;
-}
-
 void	print_hex_value(char c)
 {
-	print_hexa(c);
+	uint8_t	tmp = c;
+	if (tmp / 16 >= 10) 
+		uart_tx((tmp / 16) - 10 + 'A');
+	else
+		uart_tx((tmp / 16) + '0');
+	if (tmp % 16 >= 10)
+		uart_tx((tmp % 16) - 10 + 'A');
+	else
+		uart_tx((tmp % 16) + '0');
+	return ;
 }
 
 void	uart_tx(const char c)
