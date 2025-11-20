@@ -1,0 +1,11 @@
+commenter les references datasheet et divers fonctionnements
+
+peut etre enlever cli, isr, ...
+
+startup routine ==> d7s and D1:4
+
+D4 weak
+
+RGB first sec
+
+temperature

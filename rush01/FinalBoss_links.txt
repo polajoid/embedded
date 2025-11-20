@@ -1,0 +1,104 @@
+First drought <!>
+
+TLDR: A premiere vue, les prerequis du sujet n'ont pas l'air de necessiter: 1. de timer, 2. de faire des choix dans les differentes interruptions.
+
+
+Sont definis ici les composants du board dont l'utilisation est requise par le sujet et comment doivent-ils etre programmes. C'est a dire: quelles fonctions du MCU vont ils mobiliser.
+
+1/ Composants a l'utilisation simple
+
+D1 ->
+D2 -> 		Ces LEDs sont simplements utilises pour afficher en binaire
+D3 ->		le numero du mode (1 -> 10) actuellement en vigueur. Pas de
+D4 ->		timer ou de counter, ni d'interruption, juste les ports
+
+	LED		|	PORT
+		D1	|		PB0
+		D2	|		PB1
+		D3	|		PB2
+		D4	|		PB4
+
+
+D5 -> 	Utilisation a synchroniser avec D6, D7 et D8 (sur le SPI)
+
+	Couleur: B -  R  -  G
+	PORT : PD3 - PD5 - PD6
+
+
+
+2/ Composant necessitant une interruption
+
+	a. Switch/boutons
+
+SW1 ->		Necessite des interrupts car a chaque moment les boutonss
+SW2 ->		doivent pouvoir etre mobilise. Egalement ils declenchent
+SW3 ->		l'allumage d'une LED different pour chaque bouton
+
+	Boutons 	|	PORT		|	Interruption 1 	|	Interruption 2		| 	Interruption vct
+		SW1		|		PD2		|			INT0	|		PCINT18 		|		INT0_vect
+		SW2		|		PD4		|					|		PCINT20 		|		PCINT2_vect
+		SW3		|		PC4/PC5	|					|		PCINT12/PCINT13 |		PCINT1_vect
+
+	SW3 se trouve sur l'interface TWI relie par le 16 I/O expander.
+
+
+	b. ADC
+
+RV1 ->		Pour l'instant deux possibilites pour utiliser l'ADC:
+LDR ->			- flux continue, l'ADC convertit et envoie les donnees en continue (avec un _delay_ms)
+NTC ->			- par le timer0 qui l'autotrigger (quand le mode est active, le timer0 envoie des interrupts)
+Temp ->
+
+	L'ADC utilise l'interruption ADC -> ADC_vect. Elle est propre au composant.
+
+
+3/ Composant utilisant le TWI
+
+	a. Horloge 7bit par le 16io expander
+	Adresse : dependant du 16io expander
+	Il n'y a pas de datasheet pour ce composant. Il faut se referer a la datasheet du 16I/O Expander.
+
+	b. TempSensor
+	Adresse : 0x38
+	Aucune interruption ici: le temp sensor envoie la donne au master qui la convertit en instruction 7 bit pour l'horloge par l'Expander (voir apres). Pas besoin d'interruption ou de compteur.
+
+	c. Real Time Clock
+	Adresse: 0xA2
+
+	La RTC est connectee au PORT C3. De part ce port elle peut genere une interruption de type: PCINT13.
+	Le vecteur correspondant est le PCINT1_vect, deja utilise par la SW3
+	L'initialisation et la configuation de la RTC se fait par i2c:
+		- pour modifier un registre de RTC il faut envoyer SLA+W puis l'adresse du registre (sur 4bits) et enfin comment set up le registre (le maskbit)
+		- pour lire un registre il faut faire SLA+W puis l'adresse du registre (4bits) puis SLA+R puis le read.
+	Il y a un registre pour les minutes (0x03), un pour les heures (0x04), un pour les jours (0x05), un pour les mois (0x07) etc.
+	Donc pas besoin de timer ou d'interruption. On recupere la donnee et on l'envoit sur la 7bit clock
+
+
+4/ 16i/o I2C Bus Expander
+
+	La communication i2c avec l'Expander est relativement similaire a celle de la RTC.
+	L'adresse utilisee (arbitrairement) est : 0x22. Il y a 8 registres qui configurent l'Expander.
+		- Pour modifier un registre il faut envoyer un SLA+W puis l'addresse du registre (sur 4 bits) puis le mask de set-up
+		- Parallement pour lire un registre, le master envoit un SLA+W suivit de l'adresse du registre, le bus redemarre, puis le master envoit un SLA+R et une demande de lecture dont le resultat contient les informations du registre.
+
+	Ici les registres determinent les pins I/O de l'Expander qui determinent (notamment) si les LEDs de l'horloge sont allumees ou eteintes et lesquelles.
+	Petit plus: les registre fonctionnent en pair (0 avec 1, 2 avec 3 etc.). Envoyer un byte au registre 3 puis poursuivre en envoyant un byte, dirigera ce dernier byte vers le registre 2.
+	A priori, on allume qu'un seul chiffre a la fois, mais on est assez rapide et c'est le MCU qui gere cette affichage.
+
+
+5/ Composant utilisant le protocole SPI
+
+D6 ->
+D7 ->		Les trois LEDs RGB utilisent le protocole SPI, protocole different de i2c
+D8 ->
+.
+	Nos LEDs utilise a priori que deux des quatres lignes du SPI:
+	- SCK (-> PB5)
+	- MOSI (Master Out Slave In) (-> PB3)
+
+"PS: Ca a l'air moins complexe qu'i2c.""
+
+
+Source:
+	Datasheet RTC: https://www.nxp.com/docs/en/data-sheet/PCF8563.pdf
+	Datatsheet 16bit Expander: https://www.nxp.com/docs/en/data-sheet/PCA9555.pdf
